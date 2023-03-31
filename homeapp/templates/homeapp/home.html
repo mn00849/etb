@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>EcoTravelBudgetter</title>
+{% endblock title %}
+
+{% block content %}
+    <div class="row" style="padding-top:2.5%">
+        <div class="col-sm-6">
+            <div class="ps-5">
+            <br>
+            <div class="container-fluid">
+                <h3>Welcome to the EcoTravelBudgetter app</h3>
+                <br>
+                <p>A travel oriented tool that will help you with:</p>
+                <ul>
+                    <li>Create travel budgets to monitor your spending</li>
+                    <li>Compare the cost of journeys between a variety of methods of transport</li>
+                    <li>Keep track of the ecological costs of your journeys</li>
+                    <li>Communicate with like-minded people on our platform</li>
+                </ul>
+                <br>
+                <p>You can learn more about our platform <a href="{% url 'about' %}" class="inline" >here</a> or contact us <a href="{% url 'contact'%}" class="inline">here</a> to ask any further questions you may have.</p>
+            </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="pt-4">
+                <!--Image placeholder, put image in static/images and put link here-->
+                <img src= "https://unsplash.it/570/350" />
+            </div>
+        </div> 
+    </div>
+{% endblock content %}
+

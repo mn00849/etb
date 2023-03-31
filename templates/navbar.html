@@ -1,0 +1,15 @@
+{% load static %}
+
+    <nav class="navbar navbar-expand-sm navbar-fixed-top bg-dark navbar-dark">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <img src="{% static 'images/logo_etb.png' %}" alt="my image" height="100%" width="30%">
+                </a> 
+            </div>
+            <ul class="navbar-nav ms-auto pe-5">
+                <li class="nav-item pe-3"><a class="nav-link" href="{% url 'about' %}"><i class="bi bi-door-open me-2"></i>Sign Up</a> </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="bi bi-person me-2"></i>Login</a> </li>
+            </ul>
+        </div>
+    </nav>
