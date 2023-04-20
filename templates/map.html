@@ -1,0 +1,37 @@
+{% load static %}
+
+<div id="googleMap" style="width:100%; height: 400px;"></div>
+
+<script>
+    function initMap() {
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+        const directionsService = new google.maps.DirectionsService();
+        const map = new google.maps.Map(document.getElementById("googleMap"), {
+            zoom: 10,
+            center: {lng: 51.2362, lat: 0.5704},
+        });
+
+        directionsRenderer.setMap(map);
+        calculateAndDisplayRoute(directionsRenderer, directionsService);
+    }
+
+    function calculateAndDisplayRoute(directionsRenderer, directionsService) {
+        const selectedMode = "DRIVING"; // will add other modes later
+
+        directionsService.route({
+            origin: "Guildford",
+            destination: "Woking",
+            travelMode: google.maps.TravelMode[selectedMode],
+        })
+        .then((response) => {
+            directionsRenderer.setDirections(response);
+        })
+        .catch((e) => {
+            console.log("Directions request has failed due to " + status);
+        });
+    }   
+
+    window.initMap = initMap;
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrgHg_dQJ4qJW_BR5VmQ-x_nhVy9A8tfg&callback=initMap"></script>
