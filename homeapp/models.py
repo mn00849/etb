@@ -10,6 +10,7 @@ class UserBudget(models.Model):
     car = models.CharField(max_length=128)
     fuelType = models.CharField(max_length=32, default=None)
     budget = models.DecimalField(max_digits=16,decimal_places=2)
+    mpg = models.DecimalField(max_digits=16,decimal_places=2)
     startDate = models.DateField()
     endDate = models.DateField()
 
