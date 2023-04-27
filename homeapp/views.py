@@ -36,7 +36,12 @@ def contact(request):
     context = {}
     return render(request, 'homeapp/contact.html', context)
 
-@login_required
+@login_required(login_url='/login/auth0')
+def budget(request):
+    context = {}
+    return render(request, 'homeapp/budget.html', context)
+
+@login_required(login_url='/login/auth0')
 def logout(request):
     django_logout(request)
     domain = settings.SOCIAL_AUTH_AUTH0_DOMAIN
