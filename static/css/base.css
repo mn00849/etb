@@ -1,10 +1,54 @@
-html, body, .row {
+html,
+body,
+.row {
   color: #ffffff;
   background-color: #3e4545;
   overflow-x: hidden; }
 
-p, ul {
+@media (max-width: 767.98px) {
+  html,
+  body,
+  .row {
+    background-color: #ed1e1e; } }
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  html,
+  body,
+  .row {
+    background-color: #f18b16; } }
+
+p,
+ul {
   font-size: 1.25em; }
+
+.formbtn {
+  width: 15%;
+  color: #8d9292;
+  background-color: #3f4646;
+  border: 1px solid #8d9292; }
+  .formbtn:link {
+    color: #ffffff; }
+  .formbtn:visited {
+    color: #ffffff;
+    text-decoration: none; }
+  .formbtn:hover {
+    color: #cacaca;
+    background-color: #5a5e5e;
+    border: 1px solid #cacaca;
+    transition: 0.3s; }
+  .formbtn:active {
+    color: #000000;
+    background-color: #ffffff;
+    border: 1px solid #cacaca;
+    transition: 0.15s; }
+
+.formfield {
+  width: 100%;
+  display: block;
+  color: #ffffff;
+  border: 1px solid #8d9292;
+  background-color: #3f4646;
+  box-shadow: 0px 1.5px #000000; }
 
 .navbar-nav > li {
   /* <- this affects all navbars */
