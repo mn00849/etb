@@ -3,6 +3,11 @@
 <div id="googleMap" style="width:100%; height: 400px;"></div>
 
 <script>
+    // getting the data from django
+    var myOrigin = JSON.parse("{{origin|escapejs}}"); // replace origin part of {{origin|escapejs}} with the name of the data being used, for example, destination
+    var myDestination = JSON.parse("{{destination|escapejs}}");
+    var transportMode = JSON.parse("{{transportMode|escapejs}}");
+
     function initMap() {
         const directionsRenderer = new google.maps.DirectionsRenderer();
         const directionsService = new google.maps.DirectionsService();
@@ -19,8 +24,8 @@
         const selectedMode = "DRIVING"; // will add other modes later
 
         directionsService.route({
-            origin: "Guildford",
-            destination: "Woking",
+            origin: myOrigin, // for example, Guildford
+            destination: myDestination, // for example, Woking
             travelMode: google.maps.TravelMode[selectedMode],
         })
         .then((response) => {
