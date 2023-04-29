@@ -140,6 +140,10 @@ STATICFILES_FINDERS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Email Backend for contact form
+DEFAULT_FROM_EMAIL = "so00647@surrey.ac.uk"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 # Auth0 settings
 SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
 SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-xsr258mnntvf8xnf.uk.auth0.com'

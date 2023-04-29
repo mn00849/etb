@@ -1,45 +1,98 @@
-html, body, .row{
+html,
+body,
+.row {
     color: #ffffff;
     background-color: #3e4545;
     overflow-x: hidden;
 }
 
-p, ul{
+// Small devices (Phones, less than 768px)
+@media (max-width: 767.98px) {
+    html,
+    body,
+    .row {
+        background-color: #ed1e1e;
+    }
+}
+
+// Medium devices (Tablets/laptops, less than 1200px)
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    html,
+    body,
+    .row {
+        background-color: #f18b16;
+    }
+}
+
+p,
+ul {
     font-size: 1.25em;
 }
 
-.navbar-nav>li {             /* <- this affects all navbars */
+.formbtn {
+    width: 15%;
+    color: #8d9292;
+    background-color: #3f4646;
+    border: 1px solid #8d9292;
+    //transition: 0.2s;
+    &:link {
+        color: #ffffff;
+    }
+    &:visited {
+        color: #ffffff;
+        text-decoration: none;
+    }
+    &:hover {
+        color: #cacaca;
+        background-color: #5a5e5e;
+        border: 1px solid #cacaca;
+        transition: 0.3s;
+    }
+    &:active {
+        color: #000000;
+        background-color: #ffffff;
+        border: 1px solid #cacaca;
+        transition: 0.15s;
+    }
+}
+
+.formfield {
+    width: 100%;
+    display: block;
+    color: #ffffff;
+    border: 1px solid #8d9292;
+    background-color: #3f4646;
+    box-shadow: 0px 1.5px #000000;
+}
+
+.navbar-nav>li {
+    /* <- this affects all navbars */
     float: none;
     text-align: center;
     display: inline-block;
 }
 
-.inline{
+.inline {
     color: #1eed3d;
     position: relative;
     padding: 0.1em;
     text-decoration: none;
     transition: text-decoration-color 0.2s;
-
-    &:link{
+    &:link {
         color: #1eed3d;
     }
-    
-    &:visited{
+    &:visited {
         color: #1eed3d;
         text-decoration: none;
     }
-
-    &:hover{
+    &:hover {
         color: #30b615;
         transition: 0.2s;
     }
-    
-    &:active{
+    &:active {
         color: #87ec96;
     }
-
-    &:after{
+    &:after {
         content: '';
         position: absolute;
         bottom: 0;
@@ -50,11 +103,11 @@ p, ul{
         opacity: 0;
         transition: opacity 0.2s, transform 0.2s;
     }
-    &:hover:after{
+    &:hover:after {
         opacity: 1;
         transform: translate3d(0, 0.1em, 0);
     }
-    &:active:after{
+    &:active:after {
         color: #87ec96;
     }
 }
