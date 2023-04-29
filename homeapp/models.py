@@ -10,13 +10,13 @@ class UserBudget(models.Model):
     car = models.CharField(max_length=128)
     fuelType = models.CharField(max_length=32, default=None)
     budget = models.DecimalField(max_digits=16,decimal_places=2)
-    mpg = models.DecimalField(max_digits=16,decimal_places=2)
+    mpg = models.DecimalField(max_digits=16,decimal_places=2, default=50)
     startDate = models.DateField()
     endDate = models.DateField()
 
 class fuelPrice(models.Model):
     price = models.DecimalField(max_digits=16,decimal_places=2)
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=None)
 
 class Routes(models.Model):
     userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -25,7 +25,7 @@ class Routes(models.Model):
     destination = models.CharField(max_length=256, default=None)
     emissions = models.DecimalField(max_digits=16,decimal_places=2)
     transportType = models.IntegerField()
-    date = models.DateTimeField()
+    date = models.DateField(default=None)
 
 class transportType(models.Model):
     type = models.CharField(max_length=128)
