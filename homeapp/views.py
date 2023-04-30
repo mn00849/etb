@@ -4,16 +4,14 @@ from bs4 import BeautifulSoup
 from django.contrib.auth import logout as django_logout
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-<<<<<<< HEAD
 from django.contrib import messages
 from .models import UserBudget
-from .forms import BudgetForm #Name of budget setting form, to be changed
-=======
+from .forms import BudgetForm
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .forms import ContactForm, RoutePlannerForm
->>>>>>> bbb9a19afe5d5dce0e523adfd0752f6c8753ba14
+import datetime
 
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
@@ -62,6 +60,12 @@ def contact(request):
 @login_required(login_url='/login/auth0')
 def budget(request):
     context = {}
+    obj = get_object_or_404(UserBudget, id = request.user.id)
+    userID = reqest.user.id
+    budget = UserBudget.objects.filter(id = userID).values_list('Budget')
+    endDate = UserBudget.objects.filter(id = userID).values_list('endDate')
+    if endDate < datetime.date.today():
+        UserBudget.objects.filter(id = userID).delete()
     return render(request, 'homeapp/budget.html', context)
 
 @login_required(login_url='/login/auth0')
@@ -72,8 +76,7 @@ def logout(request):
     return_to = 'http://127.0.0.1:8000' # this can be current domain
     return redirect(f'https://{domain}/v2/logout?client_id={client_id}&returnTo={return_to}')
 
-<<<<<<< HEAD
-@login_required
+@login_required(login_url='/login/auth0')
 def set_budget(request):
     context ={}
     obj = get_object_or_404(UserBudget, id = request.user.id)
@@ -84,7 +87,7 @@ def set_budget(request):
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'Budget has been set')
-                return redirect('budget_page', userID = userID)
+                return redirect('budget', userID = userID)
             else:
                 messages.add_message(request, messages.ERROR, 'Invalid Form Data; Budget has not been set')
                 context['form']= form
@@ -98,7 +101,7 @@ def set_budget(request):
             return redirect('budget_page', userID = userID)
             context["form"] = form
     return render(request, "budget_setter", context)
-=======
+
 def routeplanner(request):
     if request.method == "GET":
         form = RoutePlannerForm()
@@ -109,4 +112,3 @@ def routeplanner(request):
             endpoint = form.cleaned_data['endpoint']
             return redirect(reverse('home'))
     return render(request, 'homeapp/routeplanner.html', {"form": form})
->>>>>>> bbb9a19afe5d5dce0e523adfd0752f6c8753ba14
