@@ -9,3 +9,5 @@ class ContactForm(forms.Form):
 class RoutePlannerForm(forms.Form):
     origin = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Origin*'}))
     endpoint = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'End Location*'}))
+    date = forms.DateField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Date of Travel*'}))
+    friends = forms.CharField(label="", required=False, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Friends to travel with (use friend emails)*'}))

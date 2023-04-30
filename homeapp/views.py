@@ -12,6 +12,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .forms import ContactForm, RoutePlannerForm
 import datetime
+from .models import transportType, UserBudget, Routes, User, carShare
+import googlemaps 
 
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
@@ -19,13 +21,15 @@ def getFuel():
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
     prices = soup.find_all("td")
-    count = 1
+    count = 0
     gas = 0
     for price in prices:
         try:
             thisPrice = float(price.get_text())
             gas = thisPrice
-            break
+            count += 1
+            if (count == 2):
+                break
         except ValueError:
             continue  
 
@@ -110,5 +114,46 @@ def routeplanner(request):
         if form.is_valid():
             origin = form.cleaned_data['origin']
             endpoint = form.cleaned_data['endpoint']
+            date = form.cleaned_data['date']
+            friends = form.cleaned_data['friends']
+            transport = transportType.objects.get(id=1).id # getting the DRIVING row
+
+            # parsing the friends field
+            if (len(friends) > 0):
+                friends = str(friends).split(",")
+            else:
+                friends = None
+
+            # calculating the cost of the journey
+            my_API_KEY = "AIzaSyBrgHg_dQJ4qJW_BR5VmQ-x_nhVy9A8tfg"
+
+            gmaps = googlemaps.Client(key=my_API_KEY)
+            
+            distance = gmaps.distance_matrix(origin,endpoint)['rows'][0]['elements'][0]["distance"]["value"]
+            #print(gmaps.distance_matrix(origin,endpoint)['rows'])
+            # converting km to miles
+            distance = float((distance / 1000) / 1.6)
+
+            mpg = UserBudget.objects.get(userID=request.user).mpg
+            fuelUsed = round(float(distance)/float(mpg),2)
+
+            fuelPrice = getFuel()
+            cost = round(float(fuelUsed)*fuelPrice,2)
+
+            # source: https://connectedfleet.michelin.com/blog/calculate-co2-emissions
+            emissions = round(2.68*float(fuelUsed), 2)
+
+            route = Routes(userID=request.user, cost=cost, origin=origin, destination=endpoint, emissions=emissions, transportType=transport, date=date)
+            route.save()
+
+            # adding the friends to the carshare table
+            routeID = Routes.objects.latest('id') # finding the route
+
+            if (len(friends) > 0):
+                for currentUser in friends:
+                    # finding the user
+                    user = User.objects.get(email=currentUser).id
+                    carshare = carShare(userID=user, routeID = routeID)
+
             return redirect(reverse('home'))
     return render(request, 'homeapp/routeplanner.html', {"form": form})
