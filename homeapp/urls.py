@@ -6,5 +6,6 @@ urlpatterns = [
     path('contact', views.contact, name='contact'),
     path('logout/', views.logout, name='logout'),
     path('routeplanner/', views.routeplanner, name="routeplanner"),
-    path('budget', views.budget, name='budget')
+    path('budget', views.budget, name='budget'),
+    path('setbudget', views.set_budget, name='setbudget')
 ]
