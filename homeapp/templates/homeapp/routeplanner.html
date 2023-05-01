@@ -4,7 +4,6 @@
     <title>EcoTravelBudgetter</title>
 {% endblock title %}
 
-
 {% block content %}
     <div class="row" style="padding-top:2.5%">
         <div class="col-sm-1 col-md-2">
@@ -28,7 +27,7 @@
                 {% csrf_token %}
                 {{form.as_p}}
                 <div class="form-actions text-center">
-                    <button type="submit" class="formbtn">Send</button>
+                    <button style="width: 15%;" type="submit" class="formbtn">Send</button>
                 </div>
             </form>
         </div>

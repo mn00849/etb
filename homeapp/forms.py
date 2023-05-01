@@ -9,3 +9,12 @@ class ContactForm(forms.Form):
 class RoutePlannerForm(forms.Form):
     origin = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Origin*'}))
     endpoint = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'End Location*'}))
+    date = forms.DateField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Date of Travel*'}))
+    friends = forms.CharField(label="", required=False, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Friends to travel with (use friend emails)*'}))
+
+class BudgetSetterForm(forms.Form):
+    car = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Name of car*'}))
+    budget = forms.DecimalField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Budget*'}))
+    mpg = forms.DecimalField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Miles per Gallon*'}))
+    startDate = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    endDate = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={'type': 'date'}))

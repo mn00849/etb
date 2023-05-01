@@ -2,7 +2,7 @@ html,
 body,
 .row {
     color: #ffffff;
-    background-color: #3e4545;
+    background-color: #3e4545 !important;
     overflow-x: hidden;
 }
 
@@ -11,7 +11,7 @@ body,
     html,
     body,
     .row {
-        background-color: #ed1e1e;
+        background-color: #ed1e1e !important;
     }
 }
 
@@ -20,7 +20,7 @@ body,
     html,
     body,
     .row {
-        background-color: #f18b16;
+        background-color: #f18b16 !important;
     }
 }
 
@@ -29,8 +29,11 @@ ul {
     font-size: 1.25em;
 }
 
+.dashboardcontainer {
+    background-color: #1e2020;
+}
+
 .formbtn {
-    width: 15%;
     color: #8d9292;
     background-color: #3f4646;
     border: 1px solid #8d9292;

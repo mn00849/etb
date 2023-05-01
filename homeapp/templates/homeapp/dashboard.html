@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>EcoTravelBudgetter</title>
+{% endblock title %}
+
+{% block content %}
+    <div class="row" style="padding-top:2.5%; height:80%;">
+        <div class="col-sm-1 col-md-1">
+        </div>
+        <div style="overflow:hidden;"class="col-sm-10 col-md-10 h-100">
+            <h1>User Dashboard</h1>
+            <br>
+            <div class="d-flex justify-content-evenly flex-wrap dashboardcontainer h-100 w-100 pt-4">
+                <button style="width: 30%; height: 35%;" type="button" onclick="window.location='{% url 'budget' %}';" class="formbtn">Budget Setter</button>
+                <button style="width: 30%; height: 35%;" type="button" onclick="window.location='{% url 'routes' %}';" class="formbtn">Route Planner</button>
+                <button style="width: 30%; height: 35%;" type="button" onclick="window.location='{% url 'routes' %}';" class="formbtn">User Statistics</button>
+                <button style="width: 30%; height: 35%;" type="button" onclick="window.location='{% url 'routes' %}';" class="formbtn mb-5">Friends</button>
+            </div>
+        </div>
+        <div class="col-sm-1 col-md-1">
+        </div> 
+    </div>
+{% endblock content %}
