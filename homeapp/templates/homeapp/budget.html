@@ -10,14 +10,28 @@
             <div class="ps-5">
             <br>
             <div class="container-fluid">
-                <h3><center>Remaining budget this week:</center></h3>
+                <h3><center>Remaining budget till reset:</center></h3>
                 <br>
-                <p1><center><font size="+5"><b>£0.00</b></font></center></p1>
+                <p1>
+                    <center>
+                        <font size="+5">
+                            <b>
+                                {% if budget %}
+                                £{{budget}}
+                                {% else %}
+                                £0.00
+                                {% endif %}
+                            </b>
+                        </font>
+                    </center>
+                </p1>
                 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
                 <ul>
                     <font size="+3">Time till reset:
                     <br>
-                    00:00:00
+                    {% if resetDate %}
+                        {{resetDate}} Days
+                    {% endif %}
                     </font>
                 </ul>
                 <p style="text-align:right;"><font size="+3">Set Budget</font></p>

@@ -18,7 +18,8 @@
                 {% if not request.user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="http://localhost:8000/login/auth0"><i class="bi bi-person me-2"></i>Login/Sign Up</a> </li>
                 {% elif request.user.is_authenticated %}
-                    <li class="nav-item pe-1"><a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-person-circle pe-2"></i>User</a> </li>
+                <!--User button not in use yet, for redesign once all pages are functioning-->
+                    <li class="nav-item pe-1"><a class="nav-link" href="{% url 'chat' %}"><i class="bi bi-person-circle pe-2"></i>Chat</a> </li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-door-open pe-1"></i>Logout</a> </li>    
                 {% endif %}              
             </ul>

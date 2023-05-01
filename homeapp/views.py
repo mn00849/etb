@@ -10,9 +10,9 @@ from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .forms import ContactForm, RoutePlannerForm, BudgetSetterForm
-import datetime
+from datetime import date, datetime
 from .models import transportType, UserBudget, Routes, User, carShare
-import googlemaps 
+#import googlemaps 
 
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
@@ -42,6 +42,11 @@ def home(request):
 def about(request):
     context = {}
     return render(request, 'homeapp/about.html', context)
+
+@login_required(login_url='/login/auth0')
+def dashboard(request):
+    context = {}
+    return render(request, 'homeapp/dashboard.html', context)
 
 def friends(request):
     context = {}
@@ -76,11 +81,26 @@ def contact(request):
 def budget(request):
     context = {}
     obj = get_object_or_404(UserBudget, id = request.user.id)
-    userID = reqest.user.id
-    budget = UserBudget.objects.filter(id = userID).values_list('Budget')
-    endDate = UserBudget.objects.filter(id = userID).values_list('endDate')
-    if endDate < datetime.date.today():
-        UserBudget.objects.filter(id = userID).delete()
+    userID = request.user
+    if (UserBudget.objects.get(userID = userID) != None):
+        budget = UserBudget.objects.get(userID = userID).budget
+        endDate = UserBudget.objects.get(userID = userID).endDate
+        context["budget"] = budget
+
+        # getting time till reset
+        endDateFormatted = datetime.strptime(str(endDate), "%Y-%m-%d")
+        
+        todayDate = date.today()
+        
+        if (endDate < todayDate):
+            UserBudget.objects.get(id = userID.id, endDate=endDate).delete()
+            UserBudget.save()
+        else:
+            # finding time till next reset
+            resetDate = endDate - todayDate
+            resetDate = resetDate.days
+            context["resetDate"] = resetDate
+        
     return render(request, 'homeapp/budget.html', context)
 
 @login_required(login_url='/login/auth0')
@@ -93,11 +113,15 @@ def logout(request):
 
 @login_required(login_url='/login/auth0')
 def set_budget(request):
-    context ={}
+    context = {}
+    if (request.method == "GET"):
+        form = BudgetSetterForm()
+        context["form"] = form
+    '''
     obj = get_object_or_404(UserBudget, id = request.user.id)
-    userID = reqest.user.id
+    userID = request.user.id
     if(obj == None):
-        form = BudgetForm(request.POST or None, initial={'userID':userID})
+        form = BudgetSetterForm(request.POST or None, initial={'userID':userID})
         if(request.method == 'POST'):
             if form.is_valid():
                 form.save()
@@ -108,15 +132,18 @@ def set_budget(request):
                 context['form']= form
     else:
         if(obj.userID != request.userID):
-            raise PermisssionDenied()
-        form = BudgetForm(request.POST or None, instance = obj)
+            print("...")
+            #raise PermisssionDenied()
+        form = BudgetSetterForm(request.POST or None, instance = obj)
         if form.is_valid():
             form.save()
             messages.add_message(request, messages.SUCCESS, 'Budget Updated')
             return redirect('budget_page', userID = userID)
             context["form"] = form
-    return render(request, "budget_setter", context)
+    '''
+    return render(request, "homeapp/budgetSet.html", context)
 
+@login_required(login_url='/login/auth0')
 def routeplanner(request):
     if request.method == "GET":
         form = RoutePlannerForm()
@@ -165,6 +192,7 @@ def routeplanner(request):
                     # finding the user
                     user = User.objects.get(email=currentUser).id
                     carshare = carShare(userID=user, routeID = routeID)
+                    carshare.save()
 
             return redirect(reverse('home'))
     return render(request, 'homeapp/routeplanner.html', {"form": form})
