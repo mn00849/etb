@@ -12,7 +12,7 @@ from django.urls import reverse
 from .forms import ContactForm, RoutePlannerForm, BudgetSetterForm
 from datetime import date, datetime
 from .models import transportType, UserBudget, Routes, User, carShare
-#import googlemaps 
+import googlemaps 
 
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
@@ -80,26 +80,30 @@ def contact(request):
 @login_required(login_url='/login/auth0')
 def budget(request):
     context = {}
-    obj = get_object_or_404(UserBudget, id = request.user.id)
     userID = request.user
-    if (UserBudget.objects.get(userID = userID) != None):
-        budget = UserBudget.objects.get(userID = userID).budget
-        endDate = UserBudget.objects.get(userID = userID).endDate
+
+    # finding the user
+    currentUser = User.objects.get(id=request.user.id)
+
+    #obj = get_object_or_404(UserBudget, userID = userID)
+    if (UserBudget.objects.filter(userID = currentUser).exists()):
+        budget = UserBudget.objects.get(userID = currentUser).budget
+        endDate = UserBudget.objects.get(userID = currentUser).endDate
         context["budget"] = budget
 
         # getting time till reset
         endDateFormatted = datetime.strptime(str(endDate), "%Y-%m-%d")
         
         todayDate = date.today()
-        
-        if (endDate < todayDate):
+
+        if (endDate <= todayDate):
             UserBudget.objects.get(id = userID.id, endDate=endDate).delete()
             UserBudget.save()
         else:
             # finding time till next reset
             resetDate = endDate - todayDate
             resetDate = resetDate.days
-            context["resetDate"] = resetDate
+            context["resetDate"] = resetDate  
         
     return render(request, 'homeapp/budget.html', context)
 
@@ -114,33 +118,45 @@ def logout(request):
 @login_required(login_url='/login/auth0')
 def set_budget(request):
     context = {}
+
+    userID = User.objects.get(id=request.user.id)
+    #obj = get_object_or_404(UserBudget, userID=userID)
+
     if (request.method == "GET"):
         form = BudgetSetterForm()
         context["form"] = form
-    '''
-    obj = get_object_or_404(UserBudget, id = request.user.id)
-    userID = request.user.id
-    if(obj == None):
-        form = BudgetSetterForm(request.POST or None, initial={'userID':userID})
-        if(request.method == 'POST'):
-            if form.is_valid():
-                form.save()
-                messages.add_message(request, messages.SUCCESS, 'Budget has been set')
-                return redirect('budget', userID = userID)
+
+    if (request.method == "POST"):
+        # getting the data
+        form = BudgetSetterForm(request.POST)
+
+        # checking if there is already a budget
+        if (form.is_valid()):
+            car = form.cleaned_data['car']
+            budget = form.cleaned_data['budget']
+            mpg = form.cleaned_data['mpg']
+            startDate = date.today()
+            endDate = form.cleaned_data['endDate']
+
+            # checking if there isn't already a budget set
+            if (UserBudget.objects.filter(userID=userID).first() == None):
+                newBudget = UserBudget(userID=userID,car=car,budget=budget,mpg=mpg,fuelType="",startDate=startDate,endDate=endDate)
+                newBudget.save()
+                return redirect('budget')
             else:
-                messages.add_message(request, messages.ERROR, 'Invalid Form Data; Budget has not been set')
-                context['form']= form
+                # updating the user budget
+                newBudget = UserBudget.objects.filter(userID=userID).update(car=car,budget=budget,mpg=mpg,fuelType="",endDate=endDate)
+                return redirect('budget')
+            
+        else:
+            messages.add_message(request, messages.ERROR, 'Invalid Form Data')
+            form = BudgetSetterForm()
+            context['form'] = form  
     else:
-        if(obj.userID != request.userID):
-            print("...")
+        if(userID.id != request.user.id):
             #raise PermisssionDenied()
-        form = BudgetSetterForm(request.POST or None, instance = obj)
-        if form.is_valid():
-            form.save()
-            messages.add_message(request, messages.SUCCESS, 'Budget Updated')
-            return redirect('budget_page', userID = userID)
-            context["form"] = form
-    '''
+            form = BudgetSetterForm()
+    
     return render(request, "homeapp/budgetSet.html", context)
 
 @login_required(login_url='/login/auth0')

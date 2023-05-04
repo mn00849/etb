@@ -10,7 +10,15 @@
             <div class="ps-5">
             <br>
             <div class="container-fluid">
-                <h3><center>Remaining budget till reset:</center></h3>
+                <center>
+                    <a href="/setbudget"><input type="submit" class="btn btn-success" value="Set Budget" style="margin-bottom: 20px;" /></a><br/>
+                    <a><input type="submit" class="btn btn-danger" value="Delete Budget" style="margin-bottom: 20px;" /></a>
+                </center>
+                <h3>
+                    <center>
+                        Remaining budget till reset:
+                    </center>
+                </h3>
                 <br>
                 <p1>
                     <center>
@@ -25,16 +33,18 @@
                         </font>
                     </center>
                 </p1>
-                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
                 <ul>
                     <font size="+3">Time till reset:
                     <br>
                     {% if resetDate %}
                         {{resetDate}} Days
+                    {% else %}
+                        0 Days
                     {% endif %}
                     </font>
                 </ul>
-                <p style="text-align:right;"><font size="+3">Set Budget</font></p>
+                <!--<p style="text-align:right;"><font size="+3">Set Budget</font></p>-->
             </div>
         </div> 
     </div>
