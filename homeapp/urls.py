@@ -12,5 +12,6 @@ urlpatterns = [
     path('friends', views.friends, name='friends'),
     path('user', views.user, name='user'),
     path('chat', views.chat, name='chat'),
-    path('setbudget', views.set_budget, name='setbudget')
+    path('setbudget', views.set_budget, name='setbudget'),
+    path('budget/delete', views.delete_budget, name='deletebudget')
 ]

@@ -147,7 +147,6 @@ def set_budget(request):
                 # updating the user budget
                 newBudget = UserBudget.objects.filter(userID=userID).update(car=car,budget=budget,mpg=mpg,fuelType="",endDate=endDate)
                 return redirect('budget')
-            
         else:
             messages.add_message(request, messages.ERROR, 'Invalid Form Data')
             form = BudgetSetterForm()
@@ -158,6 +157,15 @@ def set_budget(request):
             form = BudgetSetterForm()
     
     return render(request, "homeapp/budgetSet.html", context)
+
+@login_required(login_url='/login/auth0')
+def delete_budget(request):
+    currentUser = User.objects.get(id=request.user.id)
+
+    # finding the budget
+    budget = UserBudget.objects.get(userID=currentUser)
+    budget.delete()
+    return redirect('budget')
 
 @login_required(login_url='/login/auth0')
 def routeplanner(request):
