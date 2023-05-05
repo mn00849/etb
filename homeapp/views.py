@@ -12,7 +12,8 @@ from django.urls import reverse
 from .forms import ContactForm, RoutePlannerForm, BudgetSetterForm
 from datetime import date, datetime
 from .models import transportType, UserBudget, Routes, User, carShare
-import googlemaps 
+import googlemaps
+from django.db.models import Sum 
 
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
@@ -91,6 +92,14 @@ def budget(request):
         endDate = UserBudget.objects.get(userID = currentUser).endDate
         context["budget"] = budget
 
+        # calculating the amount remaining
+        routesCost = Routes.objects.aggregate(Sum('cost'))
+        routesCost = round(float(routesCost['cost__sum']), 2)
+        remaining = round(float(budget), 2) - routesCost
+        remaining = round(float(remaining), 2)
+        context["budget_used"] = remaining
+        context["costs"] = routesCost
+
         # getting time till reset
         endDateFormatted = datetime.strptime(str(endDate), "%Y-%m-%d")
         
@@ -103,7 +112,9 @@ def budget(request):
             # finding time till next reset
             resetDate = endDate - todayDate
             resetDate = resetDate.days
-            context["resetDate"] = resetDate  
+            context["resetDate"] = resetDate
+            
+
         
     return render(request, 'homeapp/budget.html', context)
 
@@ -146,6 +157,7 @@ def set_budget(request):
             else:
                 # updating the user budget
                 newBudget = UserBudget.objects.filter(userID=userID).update(car=car,budget=budget,mpg=mpg,fuelType="",endDate=endDate)
+
                 return redirect('budget')
         else:
             messages.add_message(request, messages.ERROR, 'Invalid Form Data')
@@ -244,3 +256,16 @@ def routeplanner(request):
 
         return redirect(reverse('home'))
     return render(request, 'homeapp/routeplanner.html', context)
+
+@login_required(login_url='/login/auth0')
+def routes(request):
+    context = {}
+
+    # getting the current user object
+    currentUser = User.objects.get(id=request.user.id)
+
+    # getting all the user routes
+    routes = Routes.objects.filter(userID=currentUser).all().order_by("-date")
+    context["routes"] = routes
+
+    return render(request, 'homeapp/routes.html', context)

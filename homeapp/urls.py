@@ -7,6 +7,7 @@ urlpatterns = [
     path('dashboard', views.dashboard, name='dashboard'),
     path('logout/', views.logout, name='logout'),
     path('routeplanner/', views.routeplanner, name="routeplanner"),
+    path('routes', views.routes, name="routes"),
     #broken
     path('budget', views.budget, name='budget'),
     path('friends', views.friends, name='friends'),

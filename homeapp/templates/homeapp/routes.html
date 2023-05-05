@@ -1,1 +1,30 @@
 {% extends "base.html" %}
+
+{% block title %}
+    <title>Current Routes</title>
+{% endblock title %}
+
+{% block content %}
+    <div class="row" style="padding-top:2.5%">
+        <div class="col-md-1">
+        </div>
+        <div class="container-fluid" style="text-align: center;">
+            <h1 style="text-align: center;">Current Routes</h1>
+            <br/>
+            <p>A page to see your current routes, add new routes and remove routes.</p>
+            <a href="/routeplanner"><input type="submit" class="btn btn-success" value="Create Route" style="margin-bottom: 20px;" /></a><br/>
+
+            {% for route in routes %}
+                <div style="min-width: 50%; max-width: 30%; box-sizing: content-box; border: 1px solid white; margin-left: auto; margin-right: auto;">
+                    <p>
+                        From: {{route.origin}}<br/>
+                        To: {{route.destination}}<br/>
+                        Cost of Trip: £{{route.cost}}<br/>
+                        CO<sub>2</sub>  Emissions: {{route.emissions}} kg <br/>
+                        <a>Map of Route</a><br/>
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

@@ -24,8 +24,8 @@
                     <center>
                         <font size="+5">
                             <b>
-                                {% if budget %}
-                                £{{budget}}
+                                {% if budget_used %}
+                                £{{budget_used}}
                                 {% else %}
                                 £0.00
                                 {% endif %}
@@ -33,7 +33,11 @@
                         </font>
                     </center>
                 </p1>
-                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                <!-- Statistics -->
+                <div>
+                    <canvas id="myChart" style="color: white;width:100%;max-width:400px; max-height: 400px; margin-left:auto; margin-right: auto; margin-top: 30px;"></canvas>
+                </div>
+                <br><br><br><br><br><br><br><br><br><br><br>
                 <ul>
                     <font size="+3">Time till reset:
                     <br>
@@ -46,6 +50,34 @@
                 </ul>
                 <!--<p style="text-align:right;"><font size="+3">Set Budget</font></p>-->
             </div>
+            
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                var xValues = ["Budget Used in £", "Budget Remaining in £"];
+                var yValues = ["{{costs|escapejs}}", "{{budget_used|escapejs}}"];
+                var barColors = [
+                "#b91d47",
+                "#8DE969",
+                ];
+                Chart.defaults.color = "#ffffff";
+
+                new Chart("myChart", {
+                type: "pie",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                    }]
+                },
+                options: {
+                    title: {
+                    display: false,
+                    text: "Budget Used Pie Chart"
+                    }
+                }
+                });
+            </script>
         </div> 
     </div>
 {% endblock content %}
