@@ -9,7 +9,7 @@ class ContactForm(forms.Form):
 class RoutePlannerForm(forms.Form):
     origin = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Origin*', 'id': 'origin'}))
     endpoint = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'End Location*', 'id': 'endpoint'}))
-    date = forms.DateField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Date of Travel*', 'id': 'date'}))
+    date = forms.DateField(label="Date of Travel", required=True, widget=forms.widgets.DateInput(attrs={'type': 'date'}))
     friends = forms.CharField(label="", required=False, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Friends to travel with (use friend emails)*'}))
 
 class BudgetSetterForm(forms.Form):

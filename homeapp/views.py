@@ -169,8 +169,11 @@ def delete_budget(request):
 
 @login_required(login_url='/login/auth0')
 def routeplanner(request):
+    context = {}
+
     if request.method == "GET":
         form = RoutePlannerForm()
+        context["form"] = form
     else:
         form = RoutePlannerForm(request.POST)
         if form.is_valid():
@@ -181,10 +184,21 @@ def routeplanner(request):
             transport = transportType.objects.get(id=1).id # getting the DRIVING row
 
             # parsing the friends field
-            if (len(friends) > 0):
-                friends = str(friends).split(",")
-            else:
-                friends = None
+            if (friends != '') and (friends != None) and not (friends is None) and (friends) and (friends != "") and not form.data['friends']:
+                print(f"Friends: {friends}.")
+                if (len(friends) > 0):
+                    friends = friends.replaceAll(" ", "")
+                    friends = str(friends).split(",")
+                else:
+                    friends = None
+
+            # checking if date is later than today
+            todayDate = date.today()
+
+            if (date < todayDate):
+                messages.add_message(request, messages.ERROR, 'Date cannot be earlier than today')
+                form = RoutePlannerForm()
+                context['form'] = form
 
             # calculating the cost of the journey
             my_API_KEY = "AIzaSyBrgHg_dQJ4qJW_BR5VmQ-x_nhVy9A8tfg"
@@ -210,13 +224,23 @@ def routeplanner(request):
 
             # adding the friends to the carshare table
             routeID = Routes.objects.latest('id') # finding the route
+                
+            if (friends != '') and (friends != None) and not (friends is None) and (friends) and (friends != "") and not form.data['friends']:
+                if (len(friends) > 0):
+                    for currentUser in friends:
+                        # finding the user
+                        if (User.objects.filter(email=currentUser).exists()):
+                            user = User.objects.get(email=currentUser)
+                            carshare = carShare(userID=user.id, routeID = routeID)
+                            carshare.save()
+                        else:
+                            messages.add_message(request, messages.ERROR, 'Friend not found')
+                            form = RoutePlannerForm()
+                            context['form'] = form
+        else:
+            messages.add_message(request, messages.ERROR, 'Invalid Form Data')
+            form = RoutePlannerForm()
+            context['form'] = form 
 
-            if (len(friends) > 0):
-                for currentUser in friends:
-                    # finding the user
-                    user = User.objects.get(email=currentUser).id
-                    carshare = carShare(userID=user, routeID = routeID)
-                    carshare.save()
-
-            return redirect(reverse('home'))
-    return render(request, 'homeapp/routeplanner.html', {"form": form})
+        return redirect(reverse('home'))
+    return render(request, 'homeapp/routeplanner.html', context)
