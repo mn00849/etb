@@ -13,7 +13,6 @@
             <div class="container-fluid">
                 <h3>Route Planning</h3>
                 <br>
-                {% include 'map.html' %}
             </div>
         </div>
         <div class="col-sm-1 col-md-2">
@@ -26,6 +25,8 @@
             <form method="post">
                 {% csrf_token %}
                 {{form.as_p}}
+                {% include 'mapForm.html' %}
+                <br/>
                 <div class="form-actions text-center">
                     <button style="width: 15%;" type="submit" class="formbtn">Send</button>
                 </div>

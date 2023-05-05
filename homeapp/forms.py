@@ -7,9 +7,9 @@ class ContactForm(forms.Form):
     message = forms.CharField(label="", widget=forms.Textarea(attrs={'class': 'formfield', 'placeholder': 'Message*'}), required=True)
 
 class RoutePlannerForm(forms.Form):
-    origin = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Origin*'}))
-    endpoint = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'End Location*'}))
-    date = forms.DateField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Date of Travel*'}))
+    origin = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Origin*', 'id': 'origin'}))
+    endpoint = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'End Location*', 'id': 'endpoint'}))
+    date = forms.DateField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Date of Travel*', 'id': 'date'}))
     friends = forms.CharField(label="", required=False, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Friends to travel with (use friend emails)*'}))
 
 class BudgetSetterForm(forms.Form):
