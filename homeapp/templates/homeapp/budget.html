@@ -34,9 +34,11 @@
                     </center>
                 </p1>
                 <!-- Statistics -->
+                {% if budget_used %}
                 <div>
                     <canvas id="myChart" style="color: white;width:100%;max-width:400px; max-height: 400px; margin-left:auto; margin-right: auto; margin-top: 30px;"></canvas>
                 </div>
+                {% endif %}
                 <br><br><br><br><br><br><br><br><br><br><br>
                 <ul>
                     <font size="+3">Time till reset:

@@ -93,12 +93,17 @@ def budget(request):
         context["budget"] = budget
 
         # calculating the amount remaining
-        routesCost = Routes.objects.aggregate(Sum('cost'))
-        routesCost = round(float(routesCost['cost__sum']), 2)
-        remaining = round(float(budget), 2) - routesCost
-        remaining = round(float(remaining), 2)
-        context["budget_used"] = remaining
-        context["costs"] = routesCost
+        try:
+            routesCost = Routes.objects.filter(userID=currentUser).aggregate(Sum('cost'))
+            if (routesCost != 0 and (not (routesCost is None)) and (type(routesCost) != None)):
+                routesCost = round(float(routesCost['cost__sum']), 2)
+                remaining = round(float(budget), 2) - routesCost
+                remaining = round(float(remaining), 2)
+                context["budget_used"] = remaining
+                context["costs"] = routesCost
+        except:
+            routesCost = 0
+            context["budget_used"] = budget
 
         # getting time till reset
         endDateFormatted = datetime.strptime(str(endDate), "%Y-%m-%d")
@@ -254,7 +259,7 @@ def routeplanner(request):
             form = RoutePlannerForm()
             context['form'] = form 
 
-        return redirect(reverse('home'))
+        return redirect(reverse('routes'))
     return render(request, 'homeapp/routeplanner.html', context)
 
 @login_required(login_url='/login/auth0')
@@ -266,6 +271,55 @@ def routes(request):
 
     # getting all the user routes
     routes = Routes.objects.filter(userID=currentUser).all().order_by("-date")
+
+    # getting all the friends that the user is travelling with
+    friendsAll = []
+
+    for route in routes:
+        friends = carShare.objects.filter(routeID=route).all()
+
+        if (type(friends) != None):
+            # converting friends back into a string
+            friendString = []
+
+            for thisFriend in friends:
+                # finding the user
+                friendUser = User.objects.get(id=thisFriend.userID).email
+                friendString.append(friendUser)
+
+            friendString = ", ".join(friendString)
+            friendsAll.append(friendString)
+        
+        context["friends"] = friendsAll
+
+    if (len(friendsAll) == 0):
+        del context["friends"]
+
     context["routes"] = routes
 
     return render(request, 'homeapp/routes.html', context)
+
+@login_required(login_url='/login/auth0')
+def deleteRoute(request, id):
+    currentUser = User.objects.get(id=request.user.id)
+
+    # finding the route
+    route = Routes.objects.get(userID=currentUser, id=id)
+    route.delete()
+    return redirect('routes')
+
+@login_required(login_url='/login/auth0')
+def showRoute(request, id):
+    context = {}
+
+    # checking if it is one of this user's routes
+    currentRoute = Routes.objects.get(id=id)
+    currentUser = User.objects.get(id=request.user.id)
+    if (type(currentRoute) != None):
+        if (currentRoute.userID != currentUser):
+            return redirect('routes')
+        else:
+            # it is this user's route
+            context["route"] = currentRoute
+        
+    return render(request, 'homeapp/route.html', context)

@@ -8,6 +8,8 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('routeplanner/', views.routeplanner, name="routeplanner"),
     path('routes', views.routes, name="routes"),
+    path('route/delete/<int:id>', views.deleteRoute, name="deleteroute"),
+    path('route/show/<int:id>', views.showRoute, name="showroute"),
     #broken
     path('budget', views.budget, name='budget'),
     path('friends', views.friends, name='friends'),

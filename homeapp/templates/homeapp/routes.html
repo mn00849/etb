@@ -15,13 +15,23 @@
             <a href="/routeplanner"><input type="submit" class="btn btn-success" value="Create Route" style="margin-bottom: 20px;" /></a><br/>
 
             {% for route in routes %}
-                <div style="min-width: 50%; max-width: 30%; box-sizing: content-box; border: 1px solid white; margin-left: auto; margin-right: auto;">
+                <div style="min-width: 40%; max-width: 30%; box-sizing: content-box; border: 1px solid white; margin-left: auto; margin-right: auto;">
                     <p>
+                        Date of Travel: {{route.date}}<br/>
                         From: {{route.origin}}<br/>
                         To: {{route.destination}}<br/>
                         Cost of Trip: £{{route.cost}}<br/>
-                        CO<sub>2</sub>  Emissions: {{route.emissions}} kg <br/>
-                        <a>Map of Route</a><br/>
+                        CO<sub>2</sub>  Emissions: {{route.emissions}} kg <br/> 
+                        {% if friends %}
+                            Travelling with:
+                            {% for friend in friends %}
+                                {{friend}}
+                            {% endfor %}
+                        {% endif %}
+                        <br/><br/>
+                        <a href="route/show/{{ route.id }}"><input type="submit" class="btn btn-light" value="Map of Route" /></a><br/>
+                        <br/>
+                        <a href="route/delete/{{ route.id }}"><input type="submit" class="btn btn-danger" value="Delete Route" /></a>
                     </p>
                 </div>
             {% endfor %}
