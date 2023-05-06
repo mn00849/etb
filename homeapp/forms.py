@@ -18,3 +18,6 @@ class BudgetSetterForm(forms.Form):
     mpg = forms.DecimalField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Miles per Gallon*'}))
     #startDate = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={'type': 'date'}))
     endDate = forms.DateField(label="End Date", required=True, widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+
+class FriendForm(forms.Form):
+    friend = forms.EmailField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Email of friend*', 'style': 'width: 50%; margin-left: auto; margin-right: auto;', 'type': 'email'}))

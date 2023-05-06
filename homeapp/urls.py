@@ -13,6 +13,8 @@ urlpatterns = [
     #broken
     path('budget', views.budget, name='budget'),
     path('friends', views.friends, name='friends'),
+    path('friend/add', views.addFriend, name='addfriend'),
+    path('friend/delete/<int:id>', views.deleteFriend, name='deletefriend'),
     path('user', views.user, name='user'),
     path('chat', views.chat, name='chat'),
     path('setbudget', views.set_budget, name='setbudget'),

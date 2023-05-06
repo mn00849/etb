@@ -9,9 +9,9 @@ from .models import UserBudget
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .forms import ContactForm, RoutePlannerForm, BudgetSetterForm
+from .forms import ContactForm, RoutePlannerForm, BudgetSetterForm, FriendForm
 from datetime import date, datetime
-from .models import transportType, UserBudget, Routes, User, carShare
+from .models import transportType, UserBudget, Routes, User, carShare, Friend
 import googlemaps
 from django.db.models import Sum 
 
@@ -51,6 +51,28 @@ def dashboard(request):
 
 def friends(request):
     context = {}
+
+    # getting this users' friends
+    friendsList = []
+
+    friends1 = Friend.objects.filter(userOne=request.user.id).all()
+    friends2 = Friend.objects.filter(userTwo=request.user.id).all()
+    if (type(friends1) != None):
+        # getting all the user objects of the friends
+        for friend in friends1:
+            thisUser = User.objects.get(id=friend.userTwo)
+            if (type(thisUser) != None):
+                friendsList.append(thisUser)
+    if (type(friends2) != None):
+        # getting all the user objects of the friends
+        for friend in friends2:
+            thisUser = User.objects.get(id=friend.userOne)
+            if (type(thisUser) != None):
+                friendsList.append(thisUser)
+
+    if (len(friendsList) > 0):
+        context["friends"] = friendsList
+
     return render(request, 'homeapp/friends.html', context)
 
 def user(request):
@@ -202,7 +224,7 @@ def routeplanner(request):
 
             # parsing the friends field
             if (friends != '') and (friends != None) and not (friends is None) and (friends) and (friends != "") and not form.data['friends']:
-                print(f"Friends: {friends}.")
+                #print(f"Friends: {friends}.")
                 if (len(friends) > 0):
                     friends = friends.replaceAll(" ", "")
                     friends = str(friends).split(",")
@@ -323,3 +345,64 @@ def showRoute(request, id):
             context["route"] = currentRoute
         
     return render(request, 'homeapp/route.html', context)
+
+@login_required(login_url='/login/auth0')
+def addFriend(request):
+    context = {}
+
+    if request.method == "GET":
+        form = FriendForm()
+        context["form"] = form
+
+    if request.method == "POST":
+        form = FriendForm(request.POST)
+        if (form.is_valid()):
+            # checking if the user exists
+
+            userEmail = form.cleaned_data['friend']
+
+            # finding the user
+            userFriend = User.objects.filter(email=userEmail)
+            if (type(userFriend) != None) and (userFriend.exists()):
+                # check if user hasn't typed themself
+                if (userFriend.first().id == request.user.id):
+                    messages.add_message(request, messages.ERROR, 'You cannot friend yourself!')
+                    form = FriendForm()
+                    context['form'] = form
+                else:
+                    # checking if the users aren't already friends
+                    check1 = Friend.objects.filter(userOne=request.user.id, userTwo=userFriend.first().id)
+                    check2 = Friend.objects.filter(userOne=userFriend.first().id, userTwo=request.user.id)
+                    #print(check1)
+                    #print(check2)
+                    if (type(check1) != None or type(check2) != None) and (check1.exists() or check2.exists()):
+                        # users are already friends
+                        messages.add_message(request, messages.ERROR, 'You are already friends with this user!')
+                        form = FriendForm()
+                        context['form'] = form
+                        return redirect('addfriend')
+                    else:
+                        # users can be added as friends
+                        newFriend = Friend(userOne=request.user.id, userTwo=userFriend.first().id)
+                        newFriend.save()
+                        return redirect('friends')
+                
+            else:
+                # send error back to the user
+                messages.add_message(request, messages.ERROR, 'User does not exist')
+                form = FriendForm()
+                context['form'] = form
+
+    return render(request, 'homeapp/addfriend.html', context)
+
+@login_required(login_url='/login/auth0')
+def deleteFriend(request, id):
+    currentFriend = Friend.objects.filter(userOne=id, userTwo=request.user.id)
+    if (currentFriend.exists()):
+        currentFriend.delete()
+
+    currentFriend = Friend.objects.filter(userOne=request.user.id, userTwo=id)
+    if (currentFriend.exists()):
+        currentFriend.delete()
+
+    return redirect('friends')

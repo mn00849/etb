@@ -6,14 +6,36 @@
             <div class="ps-5">
             <br>
             <div class="container-fluid">
-                <p1><center><font size="+5"><b>Friend List:</b></font></center></p1>
+                <p1><center><font size="+5"><b>Friends</b></font></center></p1>
+                <center>
+                    <br/>
+                    <a href="/friend/add"><input type="submit" value="Add Friend" class="btn btn-success" style="text-align: center;" /></a>
+                </center>
                 <br>
+                <div style="text-align: center;">
+                    <br/>
+                    <h4>Your friends:</h4>
+                    {% if friends %}
+                        {% for friend in friends %}
+                            <ul style="text-align: center; list-style-position: inside;">
+                                <li>
+                                {{friend.email}}
+                                <!-- Button to remove friend -->
+                                <a href="/friend/delete/{{friend.id}}"><i class="bi bi-x-circle"></i></a>
+                                </li>
+                            </ul>
+                        {% endfor %}
+                    {% else %}
+                        <p>You have no friends currently <i class="bi bi-emoji-frown-fill"></i></p>
+                    {% endif %}
+                </div>
+                <!--
                 <ul>
-                    <font size="+3">Add list of friends here
+                    <font size="+3">
                     <br>
                     </font>
                 </ul>
-
+                -->
             </div>
         </div> 
     </div>
