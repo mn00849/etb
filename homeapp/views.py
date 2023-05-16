@@ -87,6 +87,22 @@ def user(request):
 @login_required(login_url='/login/auth0')
 def stats(request):
     context = {}
+
+    currentUser = User.objects.get(id=request.user.id)
+
+    # getting the number of carbon emissions for each route
+    # emissionsSortedDates
+    emissions = []
+    dates = []
+    routesByDate = Routes.objects.filter(userID=currentUser).all().order_by("date")
+    for route in routesByDate:
+        dates.append(route.date.strftime('%Y-%m-%d'))
+        emissions.append(route.emissions)
+
+    if (len(emissions) > 5):
+        context["emissionsSortedDates"] = emissions
+        context["emissionDates"] = dates
+
     return render(request, 'homeapp/stats.html', context)
 
 @login_required(login_url='/login/auth0')
@@ -262,6 +278,12 @@ def delete_budget(request):
 def routeplanner(request):
     context = {}
 
+    # checking if a budget exists for the user
+    currentUser = User.objects.get(id=request.user.id)
+
+    if (not UserBudget.objects.filter(userID=currentUser).exists()):
+        return redirect('setbudget')
+
     if request.method == "GET":
         form = RoutePlannerForm()
         context["form"] = form
@@ -275,13 +297,12 @@ def routeplanner(request):
             transport = transportType.objects.get(id=1).id # getting the DRIVING row
 
             # parsing the friends field
-            if (friends != '') and (friends != None) and not (friends is None) and (friends) and (friends != "") and not form.data['friends']:
-                #print(f"Friends: {friends}.")
-                if (len(friends) > 0):
-                    friends = friends.replaceAll(" ", "")
-                    friends = str(friends).split(",")
-                else:
-                    friends = None
+            #print(f"Friends: {friends}.")
+            if (len(friends) > 0):
+                friends = friends.replace(" ", "")
+                friends = str(friends).split(",")
+            else:
+                friends = ""
 
             # checking if date is later than today
             todayDate = date.today()
@@ -315,8 +336,8 @@ def routeplanner(request):
 
             # adding the friends to the carshare table
             routeID = Routes.objects.latest('id') # finding the route
-                
-            if (friends != '') and (friends != None) and not (friends is None) and (friends) and (friends != "") and not form.data['friends']:
+
+            if (type(friends) != type(None) or friends != ""):    
                 if (len(friends) > 0):
                     for currentUser in friends:
                         # finding the user
@@ -345,6 +366,7 @@ def routes(request):
 
     # getting all the user routes
     routes = Routes.objects.filter(userID=currentUser).all().order_by("-date")
+    allRoutes = []
 
     # getting all the friends that the user is travelling with
     friendsAll = []
@@ -352,7 +374,7 @@ def routes(request):
     for route in routes:
         friends = carShare.objects.filter(routeID=route).all()
 
-        if (type(friends) != None):
+        if (type(friends) != None and len(friends) > 0):
             # converting friends back into a string
             friendString = []
 
@@ -363,13 +385,16 @@ def routes(request):
 
             friendString = ", ".join(friendString)
             friendsAll.append(friendString)
-        
-        context["friends"] = friendsAll
+    
+            #print(f"route {route.id} has {friendString} joining on the trip.")
+            allRoutes.append({"route":route,"friends":friendString})
+        else:
+            allRoutes.append({"route":route,"friends":0})
 
     '''if (len(friendsAll) == 0):
         context.pop["friends"]'''
 
-    context["routes"] = routes
+    context["routes"] = allRoutes
 
     return render(request, 'homeapp/routes.html', context)
 
