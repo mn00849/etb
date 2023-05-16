@@ -78,10 +78,18 @@ def friends(request):
 
     return render(request, 'homeapp/friends.html', context)
 
+@login_required(login_url='/login/auth0')
 def user(request):
     context = {}
+    context["user"] = request.user
     return render(request, 'homeapp/user.html', context)
 
+@login_required(login_url='/login/auth0')
+def stats(request):
+    context = {}
+    return render(request, 'homeapp/stats.html', context)
+
+@login_required(login_url='/login/auth0')
 def chatlist(request):
     context = {}
 
