@@ -1,23 +1,72 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <div class="row" style="padding-top:2.5%">
         <div class="col-sm-12">
             <div class="ps-5">
             <br>
             <div class="container-fluid">
-                <p1><center><font size="+5"><b>User Info:</b></font></center></p1>
-                <br>
-                <ul>
-                    <font size="+3">Add stats when more implemented
-                    <br>
-                    </font>
-                    <font size="-1">Username:<br>
+                <center>
+                <h1>Data Analytics</h1>
+                <p>
+                    Here are some statistics about your routes.
+                    {% if emissionsSortedDates %}
+                        <!-- Bar chart -->
                         
-                    </font>
-                </ul>
-
+                    {% else %}
+                        <br/>
+                        There is not enough data to show any data analytics. Please create at least 5 routes and a budget.
+                    {% endif %}
+                </p>
+                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                </center>
             </div>
         </div> 
     </div>
+    
+    <script>
+    var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var yValues = JSON.parse("{{emissionsTime|safe}}");
+    var barColors = ["#8DE969", "#8DE969", "#8DE969", "#8DE969", "#8DE969","#8DE969","#8DE969","#8DE969","#8DE969","#8DE969","#8DE969","#8DE969"];
+
+    
+    Chart.defaults.color = '#000';  
+
+    new Chart("myChart", {
+      type: "bar",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }],
+      },
+      datalabels: {
+        color: "#FFFFFF"
+      },
+      options: {
+        legend: {display: false},
+        title: {
+          display: true,
+          text: "Emissions Per Month (in kg)",
+          fontColor: "#FFFFFF"
+        },
+        scales: {
+            xAxes: [{
+                ticks: {
+                    fontColor: "white"
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    fontColor: "white"
+                }
+            }]
+        }
+      }
+    });
+    
+    </script>
+    
 {% endblock content %}

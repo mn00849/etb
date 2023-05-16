@@ -16,6 +16,7 @@ import googlemaps
 from django.db.models import Sum
 from django.http import HttpResponse, JsonResponse
 import uuid
+import json
 
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
@@ -94,14 +95,25 @@ def stats(request):
     # emissionsSortedDates
     emissions = []
     dates = []
-    routesByDate = Routes.objects.filter(userID=currentUser).all().order_by("date")
-    for route in routesByDate:
-        dates.append(route.date.strftime('%Y-%m-%d'))
-        emissions.append(route.emissions)
 
-    if (len(emissions) > 5):
-        context["emissionsSortedDates"] = emissions
-        context["emissionDates"] = dates
+    today = date.today()
+
+    #accessing the year attribute
+    year = today.year
+
+    routesByDate = Routes.objects.filter(userID=currentUser, date__year = int(year)).all().order_by("date")
+    # getting the stats per month
+    monthsEmissions = [0,0,0,0,0,0,0,0,0,0,0,0]
+    for route in routesByDate:
+        
+        # getting the current month of the route
+        dateTravel = datetime.strptime(str(route.date), "%Y-%m-%d")
+        month = dateTravel.month
+        emissionsTravel = float(route.emissions)
+
+        monthsEmissions[month-1] += emissionsTravel
+
+    context["emissionsTime"] = json.dumps(monthsEmissions)
 
     return render(request, 'homeapp/stats.html', context)
 
