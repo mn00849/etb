@@ -16,7 +16,11 @@ urlpatterns = [
     path('friend/add', views.addFriend, name='addfriend'),
     path('friend/delete/<int:id>', views.deleteFriend, name='deletefriend'),
     path('user', views.user, name='user'),
-    path('chat', views.chat, name='chat'),
+    path('chatlist', views.chatlist, name='chatlist'),
     path('setbudget', views.set_budget, name='setbudget'),
-    path('budget/delete', views.delete_budget, name='deletebudget')
+    path('budget/delete', views.delete_budget, name='deletebudget'),
+    path('friends/chat/<str:room>/', views.room, name='room'),
+    path('friends/chat/checkview/<str:roomName>', views.checkview, name='checkview'),
+    path('send', views.send, name='send'),
+    path('getMessages/<str:room>/', views.getMessages, name='getMessages'),
 ]

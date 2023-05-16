@@ -11,7 +11,7 @@ body,
     html,
     body,
     .row {
-        background-color: #ed1e1e !important;
+        background-color: #3e4545 !important;
     }
 }
 
@@ -20,7 +20,7 @@ body,
     html,
     body,
     .row {
-        background-color: #f18b16 !important;
+        background-color: #3e4545 !important;
     }
 }
 
@@ -113,4 +113,17 @@ ul {
     &:active:after {
         color: #87ec96;
     }
+}
+
+.chatContainer {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.darker {
+    border-color: #868686;
+    background-color: #868686;
 }

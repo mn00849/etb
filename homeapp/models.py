@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.core.validators import MinValueValidator
+from datetime import datetime
 
 class User(AbstractUser):
     pass
@@ -38,3 +39,12 @@ class Friend(models.Model):
 class carShare(models.Model):
     userID = models.IntegerField()
     routeID = models.ForeignKey(Routes, on_delete=models.CASCADE)
+
+class Room(models.Model):
+    name = models.CharField(max_length=1000)
+
+class Message(models.Model):
+    value = models.CharField(max_length=1000000)
+    date = models.DateTimeField(default=datetime.now(), blank=True)
+    user = models.CharField(max_length=1000000)
+    room = models.CharField(max_length=1000000)

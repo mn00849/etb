@@ -11,9 +11,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .forms import ContactForm, RoutePlannerForm, BudgetSetterForm, FriendForm
 from datetime import date, datetime
-from .models import transportType, UserBudget, Routes, User, carShare, Friend
+from .models import transportType, UserBudget, Routes, User, carShare, Friend, Room, Message
 import googlemaps
-from django.db.models import Sum 
+from django.db.models import Sum
+from django.http import HttpResponse, JsonResponse
+import uuid
 
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
@@ -49,6 +51,7 @@ def dashboard(request):
     context = {}
     return render(request, 'homeapp/dashboard.html', context)
 
+@login_required(login_url='/login/auth0')
 def friends(request):
     context = {}
 
@@ -79,8 +82,36 @@ def user(request):
     context = {}
     return render(request, 'homeapp/user.html', context)
 
-def chat(request):
+def chatlist(request):
     context = {}
+
+    # getting this users' friends
+    friendsList = []
+    roomNames = []
+
+    friends1 = Friend.objects.filter(userOne=request.user.id).all()
+    friends2 = Friend.objects.filter(userTwo=request.user.id).all()
+    if (type(friends1) != None):
+        # getting all the user objects of the friends
+        for friend in friends1:
+            thisUser = User.objects.get(id=friend.userTwo)
+            if (type(thisUser) != None):
+                # sorting the names
+                names = sorted([request.user.email, thisUser.email])
+                roomName = uuid.uuid5(uuid.NAMESPACE_X500, names[0]+ "|" + names[1])
+                friendsList.append({"user":thisUser,"room":roomName})
+    if (type(friends2) != None):
+        # getting all the user objects of the friends
+        for friend in friends2:
+            thisUser = User.objects.get(id=friend.userOne)
+            if (type(thisUser) != None):
+                names = sorted([request.user.email, thisUser.email])
+                roomName = uuid.uuid5(uuid.NAMESPACE_X500, names[0]+ "|" + names[1])
+                friendsList.append({"user":thisUser,"room":roomName})
+
+    if (len(friendsList) > 0):
+        context["friends"] = friendsList
+
     return render(request, 'homeapp/chat.html', context)
 
 def contact(request):
@@ -314,8 +345,8 @@ def routes(request):
         
         context["friends"] = friendsAll
 
-    if (len(friendsAll) == 0):
-        del context["friends"]
+    '''if (len(friendsAll) == 0):
+        context.pop["friends"]'''
 
     context["routes"] = routes
 
@@ -406,3 +437,42 @@ def deleteFriend(request, id):
         currentFriend.delete()
 
     return redirect('friends')
+
+@login_required(login_url='/login/auth0')
+def room(request, room):
+    username = request.user.email
+    room_details = Room.objects.get(name=room)
+    return render(request, 'homeapp/room.html', {
+        'username': username,
+        'room': room,
+        'room_details': room_details
+    })
+
+@login_required(login_url='/login/auth0')
+def checkview(request, roomName):
+    room = roomName
+    username = request.user.email
+
+    if Room.objects.filter(name=room).exists():
+        return redirect('/friends/chat/'+room+'/?username='+username)
+    else:
+        new_room = Room.objects.create(name=room)
+        new_room.save()
+        return redirect('/friends/chat/'+room+'/?username='+username)
+    
+@login_required(login_url='/login/auth0')
+def send(request):
+    message = request.POST['message']
+    username = request.user.email
+    room_id = request.POST['room_id']
+
+    new_message = Message.objects.create(value=message, user=username, room=room_id, date=datetime.now())
+    new_message.save()
+    return HttpResponse('Message sent successfully')
+
+@login_required(login_url='/login/auth0')
+def getMessages(request, room):
+    room_details = Room.objects.get(name=room)
+
+    messages = Message.objects.filter(room=room_details.id)
+    return JsonResponse({"messages":list(messages.values())})

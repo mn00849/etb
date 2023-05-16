@@ -9,8 +9,12 @@
                 <p1><center><font size="+5"><b>Chat with friends</b></font></center></p1>
                 <br>
                 <ul>
-                    <font size="+3">Select a friend:
-                    <br>
+                    <font size="+3">Select a friend to chat to
+                    {% for friend in friends %}
+                        <li>
+                            <a href="friends/chat/checkview/{{friend.room}}">{{friend.user.email}} <i class="bi bi-chat-left-fill"></i></a>
+                        </li>
+                    {% endfor %}
                     </font>
                 </ul>
 
