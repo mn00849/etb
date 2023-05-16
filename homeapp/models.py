@@ -1,18 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.core.validators import MinValueValidator
 
 class User(AbstractUser):
     pass
 
 class UserBudget(models.Model):
     userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    car = models.CharField(max_length=128)
-    fuelType = models.CharField(max_length=32, default=None)
-    budget = models.DecimalField(max_digits=16,decimal_places=2)
-    mpg = models.DecimalField(max_digits=16,decimal_places=2, default=50)
-    startDate = models.DateField()
-    endDate = models.DateField()
+    car = models.CharField(max_length=128, null=False)
+    fuelType = models.CharField(max_length=32, default="")
+    budget = models.DecimalField(max_digits=16,decimal_places=2, validators=[MinValueValidator(0)])
+    mpg = models.DecimalField(max_digits=16,decimal_places=2, default=50, null=False, validators=[MinValueValidator(0)])
+    startDate = models.DateField(null=False)
+    endDate = models.DateField(null=False)
 
 class fuelPrice(models.Model):
     price = models.DecimalField(max_digits=16,decimal_places=2)
