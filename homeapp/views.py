@@ -207,16 +207,28 @@ def set_budget(request):
             startDate = date.today()
             endDate = form.cleaned_data['endDate']
 
-            # checking if there isn't already a budget set
-            if (UserBudget.objects.filter(userID=userID).first() == None):
-                newBudget = UserBudget(userID=userID,car=car,budget=budget,mpg=mpg,fuelType="",startDate=startDate,endDate=endDate)
-                newBudget.save()
-                return redirect('budget')
-            else:
-                # updating the user budget
-                newBudget = UserBudget.objects.filter(userID=userID).update(car=car,budget=budget,mpg=mpg,fuelType="",endDate=endDate)
+            startWithTime = datetime(
+                year=startDate.year, 
+                month=startDate.month,
+                day=startDate.day,
+            )
 
-                return redirect('budget')
+            # boundary checks
+            if (float(budget) < 0 or float(mpg) < 0 or datetime.strptime(str(endDate), "%Y-%m-%d") < startWithTime):
+                messages.add_message(request, messages.ERROR, 'Invalid Form Data')
+                form = BudgetSetterForm()
+                context['form'] = form
+            else:
+                # checking if there isn't already a budget set
+                if (UserBudget.objects.filter(userID=userID).first() == None):
+                    newBudget = UserBudget(userID=userID,car=car,budget=budget,mpg=mpg,fuelType="",startDate=startDate,endDate=endDate)
+                    newBudget.save()
+                    return redirect('budget')
+                else:
+                    # updating the user budget
+                    newBudget = UserBudget.objects.filter(userID=userID).update(car=car,budget=budget,mpg=mpg,fuelType="",endDate=endDate)
+
+                    return redirect('budget')
         else:
             messages.add_message(request, messages.ERROR, 'Invalid Form Data')
             form = BudgetSetterForm()
@@ -232,9 +244,10 @@ def set_budget(request):
 def delete_budget(request):
     currentUser = User.objects.get(id=request.user.id)
 
-    # finding the budget
-    budget = UserBudget.objects.get(userID=currentUser)
-    budget.delete()
+    if (UserBudget.objects.filter(userID=currentUser).exists()):
+        # finding the budget
+        budget = UserBudget.objects.get(userID=currentUser)
+        budget.delete()
     return redirect('budget')
 
 @login_required(login_url='/login/auth0')
