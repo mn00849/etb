@@ -11,15 +11,15 @@
                 <h1>Data Analytics</h1>
                 <p>
                     Here are some statistics about your routes.
-                    {% if emissionsSortedDates %}
-                        <!-- Bar chart -->
-                        
-                    {% else %}
-                        <br/>
-                        There is not enough data to show any data analytics. Please create at least 5 routes and a budget.
-                    {% endif %}
+          
                 </p>
                 <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                {% if costRouteX %}
+                  <canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
+                {% else %}
+                  <p>Sorry, there are not enough routes to show any data for the cost per route for the current month.</p>
+                {% endif %}
+                <canvas id="myChart3" style="color: white;width:100%;max-width:400px; max-height: 400px; margin-left:auto; margin-right: auto; margin-top: 30px;"></canvas>
                 </center>
             </div>
         </div> 
@@ -66,6 +66,82 @@
         }
       }
     });
+    
+    // line graph
+    const xValues2 = JSON.parse("{{costRouteX|safe}}");
+    const yValues2 = JSON.parse("{{costRouteY|safe}}");
+
+    new Chart("myChart2", {
+      type: "line",
+      data: {
+        labels: xValues2,
+        datasets: [{
+          fill: false,
+          lineTension: 0,
+          backgroundColor: "#ed2f2f",
+          borderColor: "#ed2f2f",
+          data: yValues2
+        }]
+      },
+      options: {
+        legend: {display: false},
+        title: {
+          display: true,
+          text: "Cost per route (in £) for each route this month",
+          fontColor: "#FFFFFF"
+        },
+        scales: {
+          yAxes: [{ticks: {
+            fontColor: "#FFFFFF",
+          }}],
+          xAxes: [{ticks: {
+            fontColor: "#FFFFFF",
+          },
+        }],
+        },
+      }
+    });
+
+    // Pie Chart
+    var xValues3 = ["Less than 1 mile", "Between 1 and 5 miles", "Between 5 and 10 miles", "Between 10 and 25 miles", "More than 25 miles"];
+    var yValues3 = JSON.parse("{{distanceRoute|safe}}");
+    var barColors = [
+    "#b91d47",
+    "#8DE969",
+    "blue",
+    "yellow",
+    "red"
+    ];
+    Chart.defaults.color = "#ffffff";
+
+    new Chart("myChart3", {
+    type: "pie",
+    data: {
+        labels: xValues3,
+        datasets: [{
+        backgroundColor: barColors,
+        data: yValues3
+        }],
+        fontColor: "white"
+    },
+    options: {
+        title: {
+        display: true,
+        text: "Trips per distance",
+        fontColor: "white"
+        },
+        scaleFontColor: "white",
+        plugins: {
+          // Change options for ALL labels of THIS CHART
+          datalabels: {
+            color: 'white'
+          }
+        }
+    },
+    scaleFontColor: "white",
+    fontColor: "white"
+    });
+
     
     </script>
     

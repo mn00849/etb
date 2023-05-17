@@ -22,11 +22,12 @@ class fuelPrice(models.Model):
 
 class Routes(models.Model):
     userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    cost = models.DecimalField(max_digits=16,decimal_places=2)
+    cost = models.DecimalField(max_digits=16,decimal_places=2, validators=[MinValueValidator(0)])
     origin = models.CharField(max_length=256, default=None, null=False)
     destination = models.CharField(max_length=256, default=None, null=False)
-    emissions = models.DecimalField(max_digits=16,decimal_places=2)
+    emissions = models.DecimalField(max_digits=16,decimal_places=2, validators=[MinValueValidator(0)])
     transportType = models.IntegerField()
+    distance = models.DecimalField(max_digits=16,decimal_places=2, default=0, validators=[MinValueValidator(0)])
     date = models.DateField(default=None)
 
 class transportType(models.Model):

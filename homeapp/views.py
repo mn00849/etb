@@ -115,6 +115,49 @@ def stats(request):
 
     context["emissionsTime"] = json.dumps(monthsEmissions)
 
+    # showing the cost per route for this month
+    costRouteX = [0]
+    costRouteY = [0]
+
+    routesByDate = Routes.objects.filter(userID=currentUser, date__year = int(year), date__month = int(today.month)).all().order_by("date")
+
+    if (len(routesByDate) > 0):
+        for route in routesByDate:
+
+            # getting the cost of the trip
+            cost = float(route.cost)
+
+            costRouteX.append(len(costRouteX))
+            costRouteY.append(cost)
+
+        context["costRouteX"] = json.dumps(costRouteX)
+        context["costRouteY"] = json.dumps(costRouteY)
+
+    # showing average distance of journeys
+    # < 1 miles, >= 1 miles and < 5 miles, >= 5 miles and < 10 miles, >= 10 miles and < 25 miles, >= 25 miles
+    distanceRoute = [0,0,0,0,0]
+
+    routesByDate = Routes.objects.filter(userID=currentUser, date__year = int(year), date__month = int(today.month)).all().order_by("date")
+
+    if (len(routesByDate) > 0):
+        for route in routesByDate:
+            # getting the distance of the route
+            distance = float(route.distance)
+
+            # comparing distance
+            if (distance < 1):
+                distanceRoute[0] += 1
+            if (distance >= 1 and distance < 5):
+                distanceRoute[1] += 1
+            if (distance >= 5 and distance < 10):
+                distanceRoute[2] += 1
+            if (distance >= 10 and distance < 25):
+                distanceRoute[3] += 1
+            if (distance >= 25):
+                distanceRoute[4] += 1
+
+        context["distanceRoute"] = json.dumps(distanceRoute)
+
     return render(request, 'homeapp/stats.html', context)
 
 @login_required(login_url='/login/auth0')
@@ -343,7 +386,7 @@ def routeplanner(request):
             # source: https://connectedfleet.michelin.com/blog/calculate-co2-emissions
             emissions = round(2.68*float(fuelUsed), 2)
 
-            route = Routes(userID=request.user, cost=cost, origin=origin, destination=endpoint, emissions=emissions, transportType=transport, date=date)
+            route = Routes(userID=request.user, cost=cost, origin=origin, destination=endpoint, emissions=emissions, distance=distance,transportType=transport, date=date)
             route.save()
 
             # adding the friends to the carshare table
