@@ -1,0 +1,4 @@
+beautifulsoup4==4.9.3
+Django==4.2
+googlemaps==4.10.0
+Requests==2.30.0
