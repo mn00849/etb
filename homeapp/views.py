@@ -47,6 +47,11 @@ def about(request):
     context = {}
     return render(request, 'homeapp/about.html', context)
 
+def handler404(request, exception, template_name="404.html"):
+    response = render(request, 'homeapp/exception.html', {})
+    response.status_code = 404
+    return response
+
 @login_required(login_url='/login/auth0')
 def dashboard(request):
     context = {}
@@ -337,6 +342,7 @@ def routeplanner(request):
     currentUser = User.objects.get(id=request.user.id)
 
     if (not UserBudget.objects.filter(userID=currentUser).exists()):
+        messages.add_message(request, messages.ERROR, "You cannot create routes before you have a budget! Please create a budget.")
         return redirect('setbudget')
 
     if request.method == "GET":

@@ -101,4 +101,8 @@ ul {
   border-color: #868686;
   background-color: #868686; }
 
+/* Solid border */
+hr.solid {
+  border-top: 3px solid #bbb; }
+
 /*# sourceMappingURL=base.css.map */

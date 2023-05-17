@@ -19,7 +19,12 @@
                 {% else %}
                   <p>Sorry, there are not enough routes to show any data for the cost per route for the current month.</p>
                 {% endif %}
-                <canvas id="myChart3" style="color: white;width:100%;max-width:400px; max-height: 400px; margin-left:auto; margin-right: auto; margin-top: 30px;"></canvas>
+                {% if distanceRoute %}
+                  <canvas id="myChart3" style="color: white;width:100%;max-width:400px; max-height: 400px; margin-left:auto; margin-right: auto; margin-top: 30px;"></canvas>
+                {% else %}
+                  <p>Sorry, there are not enough routes to show any data for the distance per route summary for the current month.</p>
+                {% endif %}
+                
                 </center>
             </div>
         </div> 

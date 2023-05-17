@@ -33,23 +33,28 @@
                         </font>
                     </center>
                 </p1>
+                <br/>
+                <h4>
+                    <center>
+                        Time till reset:
+                        {% if resetDate %}
+                            {{resetDate}} Days
+                        {% else %}
+                            0 Days
+                        {% endif %}
+                    </center>
+                </h4>
+
                 <!-- Statistics -->
                 {% if budget_used %}
+                <br/>
+                <hr class="solid" style="width: 50%; margin-left: auto; margin-right: auto; margin-top: 50px;"/>
+                <br/>
                 <div>
+                    <h5 style="text-align: center;">Budget used vs Budget Remaining</h5>
                     <canvas id="myChart" style="color: white;width:100%;max-width:400px; max-height: 400px; margin-left:auto; margin-right: auto; margin-top: 30px;"></canvas>
                 </div>
                 {% endif %}
-                <br><br><br><br><br><br><br><br><br><br><br>
-                <ul>
-                    <font size="+3">Time till reset:
-                    <br>
-                    {% if resetDate %}
-                        {{resetDate}} Days
-                    {% else %}
-                        0 Days
-                    {% endif %}
-                    </font>
-                </ul>
                 <!--<p style="text-align:right;"><font size="+3">Set Budget</font></p>-->
             </div>
             
@@ -74,8 +79,8 @@
                 },
                 options: {
                     title: {
-                    display: false,
-                    text: "Budget Used Pie Chart"
+                    display: true,
+                    text: "Budget Used vs Budget Remaining"
                     }
                 }
                 });

@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+handler404 = 'homeapp.views.handler404'
+
 urlpatterns = [
     path('', include('homeapp.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include("django.contrib.auth.urls")),
-    path('', include('social_django.urls'))
+    path('', include('social_django.urls')),
 ]
