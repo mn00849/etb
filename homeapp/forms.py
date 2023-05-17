@@ -5,6 +5,7 @@ class ContactForm(forms.Form):
     subject = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Subject*'}))
     email = forms.EmailField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Email Address*'}))
     message = forms.CharField(label="", widget=forms.Textarea(attrs={'class': 'formfield', 'placeholder': 'Message*'}), required=True)
+    consent = forms.BooleanField(label="Do you give consent for your data to be collected by us?",required=True)
 
 class RoutePlannerForm(forms.Form):
     origin = forms.CharField(label="", required=True, widget=forms.TextInput(attrs={'class': 'formfield', 'placeholder': 'Origin*', 'id': 'origin'}))
