@@ -13,26 +13,29 @@
             <br/>
             <p>A page to see your current routes, add new routes and remove routes.</p>
             <a href="/routeplanner"><input type="submit" class="btn btn-success" value="Create Route" style="margin-bottom: 20px;" /></a><br/>
-
+            <hr class="solid" style="width: 60%; margin-left: auto; margin-right: auto; margin-top: 50px;"/>
             {% for route in routes %}
-                <div style="min-width: 40%; max-width: 30%; box-sizing: content-box; border: 1px solid white; margin-left: auto; margin-right: auto;">
-                    <p>
-                        Date of Travel: {{route.route.date}}<br/>
-                        From: {{route.route.origin}}<br/>
-                        To: {{route.route.destination}}<br/>
-                        Distance: {{route.route.distance}} Miles<br/>
-                        Cost of Trip: £{{route.route.cost}}<br/>
-                        CO<sub>2</sub>  Emissions: {{route.route.emissions}} kg <br/> 
-                        {% if route.friends != 0 %}
-                            Travelling with:
-                            {{route.friends}}
-                        {% endif %}
-                        <br/><br/>
-                        <a href="route/show/{{ route.route.id }}"><input type="submit" class="btn btn-light" value="Map of Route" /></a><br/>
-                        <br/>
-                        <a href="route/delete/{{ route.route.id }}"><input type="submit" class="btn btn-danger" value="Delete Route" /></a>
-                    </p>
+                <div style="max-width: 80%;margin-left: auto; margin-right: auto;">
+                    <div>
+                        <p>
+                            Date of Travel: {{route.route.date}}<br/>
+                            From: {{route.route.origin}}<br/>
+                            To: {{route.route.destination}}<br/>
+                            Distance: {{route.route.distance}} Miles<br/>
+                            Cost of Trip: £{{route.route.cost}}<br/>
+                            CO<sub>2</sub>  Emissions: {{route.route.emissions}} kg <br/> 
+                            {% if route.friends != 0 %}
+                                Travelling with:
+                                {{route.friends}}
+                            {% endif %}
+                            <br/><br/>
+                            <a href="route/show/{{ route.route.id }}"><input type="submit" class="btn btn-light" value="Map of Route" /></a><br/>
+                            <br/>
+                            <a href="route/delete/{{ route.route.id }}"><input type="submit" class="btn btn-danger" value="Delete Route" /></a>
+                        </p>
+                    </div>
                 </div>
+                <hr class="solid" style="width: 60%; margin-left: auto; margin-right: auto; margin-top: 30px;"/>
             {% endfor %}
         </div>
     </div>
