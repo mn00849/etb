@@ -324,10 +324,6 @@ class MainTests(TestCase):
         response = self.client.get('/friends/chat/'+str(roomName)+'/?username='+currentUser.email)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response,"Chatroom")
-
-        # sending a message
-        message = Message(value="Hi Jack!", user=currentUser.email, room=roomName)
-        message.save()
         
     # Data Analytics Page
     def testDataAnalytics(self):
