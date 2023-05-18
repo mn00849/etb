@@ -41,4 +41,4 @@ libsass==0.22.0
 whitenoise==6.4.0
 django-sass-processor==1.2.2
 django-compressor==4.3.1
-social_django==5.2.0
+python-social-auth[django]==0.3.6
