@@ -229,9 +229,14 @@ def budget(request):
         endDate = UserBudget.objects.get(userID = currentUser).endDate
         context["budget"] = budget
 
+        # getting time till reset
+        endDateFormatted = datetime.strptime(str(endDate), "%Y-%m-%d")
+        
+        todayDate = date.today()
+
         # calculating the amount remaining
         try:
-            routesCost = Routes.objects.filter(userID=currentUser).aggregate(Sum('cost'))
+            routesCost = Routes.objects.filter(userID=currentUser, date__range=[todayDate, endDate]).aggregate(Sum('cost'))
             if (routesCost != 0 and (not (routesCost is None)) and (type(routesCost) != None)):
                 routesCost = round(float(routesCost['cost__sum']), 2)
                 remaining = round(float(budget), 2) - routesCost
@@ -241,11 +246,6 @@ def budget(request):
         except:
             routesCost = 0
             context["budget_used"] = budget
-
-        # getting time till reset
-        endDateFormatted = datetime.strptime(str(endDate), "%Y-%m-%d")
-        
-        todayDate = date.today()
 
         if (endDate <= todayDate):
             UserBudget.objects.get(id = userID.id, endDate=endDate).delete()
@@ -426,7 +426,7 @@ def routes(request):
     currentUser = User.objects.get(id=request.user.id)
 
     # getting all the user routes
-    routes = Routes.objects.filter(userID=currentUser).all().order_by("-date")
+    routes = Routes.objects.filter(userID=currentUser).all().order_by("date")
     allRoutes = []
 
     # getting all the friends that the user is travelling with
