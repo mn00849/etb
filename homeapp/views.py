@@ -21,6 +21,10 @@ import json
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
 def getFuel():
+    proxyDict = { 
+          'http'  : "http://mn00849.pythonanywhere.com", 
+          'https' : "https://mn00849.pythonanywhere.com"
+        }
     response = requests.get(url, proxies={"http": "http://mn00849.pythonanywhere.com"})
     soup = BeautifulSoup(response.content, "html.parser")
     prices = soup.find_all("td")
