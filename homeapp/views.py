@@ -21,7 +21,7 @@ import json
 url = "https://www.globalpetrolprices.com/United-Kingdom/gasoline_prices/"
 
 def getFuel():
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     soup = BeautifulSoup(response.content, "html.parser")
     prices = soup.find_all("td")
     count = 0
